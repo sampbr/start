@@ -3,9 +3,12 @@
 # Caminho para o executável do servidor
 SERVER_PATH="./samp03svr"
 
+# Caminho para o arquivo de log
+LOG_FILE="server_log.txt"
+
 # Verificar se o arquivo samp03svr existe
 if [ ! -f "$SERVER_PATH" ]; then
-    echo "Arquivo $SERVER_PATH não encontrado. Baixando..."
+    echo "Arquivo $SERVER_PATH não encontrado. Baixando..." | tee -a $LOG_FILE
 
     # Baixar o arquivo samp03svr do repositório do GitHub
     curl -L https://github.com/sampbr/start/raw/main/samp03svr -o $SERVER_PATH
@@ -13,18 +16,18 @@ if [ ! -f "$SERVER_PATH" ]; then
     # Dar permissões 755 ao arquivo
     chmod 755 $SERVER_PATH
 
-    echo "Arquivo samp03svr baixado e permissões definidas!"
+    echo "Arquivo samp03svr baixado e permissões definidas!" | tee -a $LOG_FILE
 fi
 
-# Iniciar o servidor
-echo "Iniciando o servidor..."
-./$SERVER_PATH
+# Iniciar o servidor e registrar a saída no arquivo de log
+echo "Iniciando o servidor..." | tee -a $LOG_FILE
+./$SERVER_PATH >> $LOG_FILE 2>&1
 
 # Monitorar se o servidor fechou sozinho (processo terminou)
 while true; do
     # Verificar se o processo do servidor ainda está rodando
     if ! pgrep -x "samp03svr" > /dev/null; then
-        echo "O servidor fechou automaticamente. Encerrando o script."
+        echo "O servidor fechou automaticamente. Encerrando o script." | tee -a $LOG_FILE
         exit 0
     fi
     # Aguardar 5 segundos antes de verificar novamente
