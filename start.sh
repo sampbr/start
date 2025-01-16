@@ -20,6 +20,7 @@ else
     if [ "$current_permissions" != "755" ]; then
         echo "Permissões do arquivo $SERVER_PATH não estão como 755. Corrigindo..."
         chmod 755 $SERVER_PATH
+        clear
     fi
 fi
 
