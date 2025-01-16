@@ -4,6 +4,19 @@
 SERVER_PATH="./samp03svr"
 LOG_FILE="server_log.txt"
 
+# Função para iniciar o servidor
+start_server() {
+    echo "Iniciando o servidor..."
+    ./$SERVER_PATH &
+    SERVER_PID=$!
+}
+
+# Função para monitorar os logs
+monitor_logs() {
+    echo "Monitorando o log do servidor..."
+    tail -f $LOG_FILE
+}
+
 # Verificar se o arquivo samp03svr existe
 if [ ! -f "$SERVER_PATH" ]; then
     echo "Arquivo $SERVER_PATH não encontrado. Baixando..."
@@ -17,23 +30,15 @@ if [ ! -f "$SERVER_PATH" ]; then
     echo "Arquivo samp03svr baixado e permissões definidas!"
 fi
 
-# Iniciar o servidor em segundo plano
-echo "Iniciando o servidor..."
-./$SERVER_PATH &
+# Iniciar o servidor e monitorar os logs
+start_server
+monitor_logs &
 
-# Armazenar o PID do processo do servidor
-SERVER_PID=$!
-
-# Monitorar o arquivo de log em tempo real
-echo "Monitorando o log do servidor..."
-tail -f $LOG_FILE &
-
-# Monitorar se o servidor fechou sozinho (processo terminado)
+# Continuar monitorando se o servidor está em execução, sem fechar o script
 while true; do
-    # Usar pgrep para verificar se o processo ainda está rodando
-    if ! pgrep -f "samp03svr" > /dev/null; then
-        echo "O servidor fechou automaticamente. Encerrando o script."
-        exit 0
+    # Verificar se o servidor ainda está rodando (verificando o PID)
+    if ! kill -0 $SERVER_PID > /dev/null 2>&1; then
+        echo "O servidor fechou automaticamente, mas os logs ainda estão sendo exibidos."
     fi
     # Aguardar 5 segundos antes de verificar novamente
     sleep 5
