@@ -29,12 +29,14 @@ SERVER_PID=$!
 # Monitorar o arquivo de log em tempo real e também garantir que o servidor continue rodando
 tail -f $LOG_FILE &
 
-# Monitorar se o servidor fechou sozinho (processo terminou)
+# Monitorar se o servidor falhou (não apenas se fechou rapidamente)
 while true; do
-    # Verificar se o processo do servidor ainda está rodando
-    if ! ps -p $SERVER_PID > /dev/null; then
-        echo "O servidor fechou automaticamente. Encerrando o script." | tee -a $LOG_FILE
-        exit 0
+    # Verificar se o processo do servidor ainda está rodando com pgrep
+    if ! pgrep -x "samp03svr" > /dev/null; then
+        echo "O servidor fechou automaticamente. Tentando reiniciar..." | tee -a $LOG_FILE
+        # Reiniciar o servidor
+        ./$SERVER_PATH >> $LOG_FILE 2>&1 &
+        SERVER_PID=$!
     fi
     # Aguardar 5 segundos antes de verificar novamente
     sleep 5
