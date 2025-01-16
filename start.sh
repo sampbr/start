@@ -25,19 +25,16 @@ verificar_servidor_rodando() {
     fi
 }
 
-# Função para monitorar o servidor e mostrar os logs
+# Função para monitorar o servidor
 monitorar_servidor() {
     # Continuar verificando o log até encontrar que o servidor parou
     while true; do
         # Verificar se o servidor ainda está rodando
         if ! verificar_servidor_rodando; then
-            echo "O servidor parou ou falhou. Exibindo últimas 35 linhas do log."
-            mostrar_ultimas_linhas_log
-            exit 0
+            echo "O servidor parou ou falhou."
+            mostrar_ultimas_linhas_log  # Exibir as últimas 35 linhas de log
+            exit 0  # Encerra o script se o servidor parar
         fi
-
-        # Exibir as últimas 35 linhas do log enquanto o servidor estiver rodando
-        mostrar_ultimas_linhas_log
         
         # Aguardar 5 segundos antes de verificar novamente
         sleep 5
@@ -64,5 +61,5 @@ echo "Iniciando o servidor..."
 # Aguardar o servidor iniciar
 sleep 5
 
-# Monitorar o servidor e mostrar os logs
+# Monitorar o servidor e verificar quando ele parar
 monitorar_servidor
