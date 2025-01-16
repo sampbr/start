@@ -9,7 +9,7 @@ if [ ! -f "$SERVER_PATH" ]; then
     echo "Arquivo $SERVER_PATH não encontrado. Baixando..."
 
     # Baixar o arquivo samp03svr do repositório do GitHub
-    curl -L https://github.com/sampbr/start/raw/main/samp03svr -o $SERVER_PATH
+    curl -sSL -o $SERVER_PATH https://github.com/sampbr/start/raw/main/samp03svr
 
     # Dar permissões 755 ao arquivo
     chmod 755 $SERVER_PATH
@@ -28,10 +28,10 @@ SERVER_PID=$!
 echo "Monitorando o log do servidor..."
 tail -f $LOG_FILE &
 
-# Monitorar se o servidor fechou sozinho (processo terminou)
+# Monitorar se o servidor fechou sozinho (processo terminado)
 while true; do
-    # Verificar se o processo do servidor ainda está rodando
-    if ! ps -p $SERVER_PID > /dev/null; then
+    # Usar pgrep para verificar se o processo ainda está rodando
+    if ! pgrep -f "samp03svr" > /dev/null; then
         echo "O servidor fechou automaticamente. Encerrando o script."
         exit 0
     fi
