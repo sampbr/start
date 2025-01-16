@@ -40,7 +40,7 @@ if [ ! -f "$SERVER_PATH" ]; then
     echo "Arquivo samp03svr baixado e permissões definidas!"
 fi
 
-# Iniciar o servidor
+# Iniciar o servidor em segundo plano
 echo "Iniciando o servidor..."
 ./$SERVER_PATH &  # Rodando o servidor em segundo plano
 
