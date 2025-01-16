@@ -19,25 +19,29 @@ if [ ! -f "$SERVER_PATH" ]; then
     echo "Arquivo samp03svr baixado e permissões definidas!" | tee -a $LOG_FILE
 fi
 
-# Iniciar o servidor em segundo plano e redirecionar a saída para o arquivo de log
-echo "Iniciando o servidor..." | tee -a $LOG_FILE
-./$SERVER_PATH >> $LOG_FILE 2>&1 &
+# Função para iniciar o servidor
+start_server() {
+    echo "Iniciando o servidor..." | tee -a $LOG_FILE
+    # Executar o servidor em segundo plano e redirecionar a saída para o log
+    ./$SERVER_PATH >> $LOG_FILE 2>&1 &
+    SERVER_PID=$!
+}
 
-# Obter o PID do processo do servidor
-SERVER_PID=$!
+# Iniciar o servidor pela primeira vez
+start_server
 
-# Monitorar o arquivo de log em tempo real e também garantir que o servidor continue rodando
-tail -f $LOG_FILE &
-
-# Monitorar se o servidor falhou (não apenas se fechou rapidamente)
+# Monitorar o servidor sem ps ou pgrep (usando a saída de erro do servidor)
 while true; do
-    # Verificar se o processo do servidor ainda está rodando com pgrep
-    if ! pgrep -x "samp03svr" > /dev/null; then
-        echo "O servidor fechou automaticamente. Tentando reiniciar..." | tee -a $LOG_FILE
+    # Esperar que o servidor tenha rodado um pouco antes de verificar
+    sleep 10
+
+    # Verificar se o servidor ainda está gerando logs ou se falhou
+    if ! tail -n 20 $LOG_FILE | grep -q "Running Grand Larceny"; then
+        echo "O servidor falhou ou fechou inesperadamente. Reiniciando..." | tee -a $LOG_FILE
         # Reiniciar o servidor
-        ./$SERVER_PATH >> $LOG_FILE 2>&1 &
-        SERVER_PID=$!
+        start_server
     fi
-    # Aguardar 5 segundos antes de verificar novamente
+
+    # Aguardar mais um pouco antes de verificar novamente
     sleep 5
 done
