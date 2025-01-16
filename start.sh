@@ -30,6 +30,9 @@ start_server() {
 # Iniciar o servidor pela primeira vez
 start_server
 
+# Monitorar o arquivo de log em tempo real com 'tail -f' e continuar a execução do servidor
+tail -f $LOG_FILE &
+
 # Monitorar o servidor sem ps ou pgrep (usando a saída de erro do servidor)
 while true; do
     # Esperar que o servidor tenha rodado um pouco antes de verificar
