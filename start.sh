@@ -34,10 +34,10 @@ fi
 start_server
 monitor_logs &
 
-# Continuar monitorando se o servidor está em execução, sem fechar o script
+# Continuar monitorando os logs sem encerrar o script
 while true; do
-    # Verificar se o servidor ainda está rodando (verificando o PID)
-    if ! kill -0 $SERVER_PID > /dev/null 2>&1; then
+    # Verificar se o processo do servidor está rodando sem usar ps/pgrep
+    if ! kill -0 $SERVER_PID 2>/dev/null; then
         echo "O servidor fechou automaticamente, mas os logs ainda estão sendo exibidos."
     fi
     # Aguardar 5 segundos antes de verificar novamente
