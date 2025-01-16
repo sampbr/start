@@ -30,21 +30,5 @@ start_server() {
 # Iniciar o servidor pela primeira vez
 start_server
 
-# Monitorar o arquivo de log em tempo real com 'tail -f' e continuar a execução do servidor
-tail -f $LOG_FILE &
-
-# Monitorar o servidor sem ps ou pgrep (usando a saída de erro do servidor)
-while true; do
-    # Esperar que o servidor tenha rodado um pouco antes de verificar
-    sleep 10
-
-    # Verificar se o servidor ainda está gerando logs ou se falhou
-    if ! tail -n 20 $LOG_FILE | grep -q "Running Grand Larceny"; then
-        echo "O servidor falhou ou fechou inesperadamente. Reiniciando..." | tee -a $LOG_FILE
-        # Reiniciar o servidor
-        start_server
-    fi
-
-    # Aguardar mais um pouco antes de verificar novamente
-    sleep 5
-done
+# Monitorar o arquivo de log em tempo real
+tail -f $LOG_FILE
