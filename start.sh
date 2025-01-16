@@ -15,13 +15,13 @@ mostrar_ultimas_linhas_log() {
     fi
 }
 
-# Função para verificar se o servidor está gerando logs indicando que está rodando
+# Função para verificar se o servidor está rodando
 verificar_servidor_rodando() {
-    # Procurar pela linha "Number of vehicle models" no log
-    if grep -q "Number of vehicle models" "$LOG_FILE"; then
-        return 0  # Se a linha for encontrada, o servidor está rodando
+    # Verificar se o processo samp03svr está em execução usando ps
+    if ps aux | grep -v grep | grep -q "$SERVER_PATH"; then
+        return 0  # O servidor está rodando
     else
-        return 1  # Caso contrário, o servidor parou
+        return 1  # O servidor não está rodando
     fi
 }
 
@@ -29,7 +29,7 @@ verificar_servidor_rodando() {
 monitorar_servidor() {
     # Continuar verificando o log até encontrar que o servidor parou
     while true; do
-        # Verificar se o servidor está gerando a linha esperada no log
+        # Verificar se o servidor ainda está rodando
         if ! verificar_servidor_rodando; then
             echo "O servidor parou ou falhou. Exibindo últimas 35 linhas do log."
             mostrar_ultimas_linhas_log
@@ -40,7 +40,7 @@ monitorar_servidor() {
         mostrar_ultimas_linhas_log
         
         # Aguardar 5 segundos antes de verificar novamente
-        sleep 2
+        sleep 5
     done
 }
 
