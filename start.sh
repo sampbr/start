@@ -2,7 +2,7 @@
 
 # Caminho para o executável do servidor
 SERVER_PATH="./samp03svr"
-LOG_DIR="./logs"
+LOG_DIR="logs"
 
 # Verificar se a pasta logs existe e removê-la
 if [ -d "$LOG_DIR" ]; then
