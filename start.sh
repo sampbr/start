@@ -2,14 +2,6 @@
 
 # Caminho para o executável do servidor
 SERVER_PATH="./samp03svr"
-LOG_DIR="logs"
-
-# Verificar se a pasta logs existe e removê-la
-if [ -d "$LOG_DIR" ]; then
-    echo "Pasta logs identificada. Removendo..."
-    rm -rf "$LOG_DIR"
-    echo "Pasta logs removida!"
-fi
 
 # Verificar se o arquivo samp03svr existe
 if [ ! -f "$SERVER_PATH" ]; then
@@ -34,6 +26,7 @@ fi
 
 # Iniciar o servidor
 echo "Iniciando o servidor..."
+rm -r logs
 ./$SERVER_PATH
 
 # Monitorar se o servidor fechou sozinho (processo terminou)
