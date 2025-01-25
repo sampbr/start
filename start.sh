@@ -2,7 +2,6 @@
 
 # Caminho para o executável do servidor
 SERVER_PATH="./samp03svr"
-LOG_FILE="./server_log.txt"
 LOG_DIR="./logs"
 
 # Verificar se a pasta logs existe e removê-la
@@ -41,42 +40,14 @@ else
     fi
 fi
 
-# Iniciar o servidor em segundo plano e capturar a saída
+# Iniciar o servidor
 echo "Iniciando o servidor..."
-./$SERVER_PATH &
-
-# Capturar o PID do processo do servidor
-SERVER_PID=$!
-
-# Aguardar até detectar a mensagem "SA-MP Dedicated Server" ou "Started server on"
-echo "Aguardando a inicialização do servidor..."
-while true; do
-    # Verificar se a mensagem "SA-MP Dedicated Server" ou "Started server on" aparece no log
-    if tail -n 100 "$LOG_FILE" | grep -q -E "SA-MP Dedicated Server|Started server on"; then
-        echo "Servidor iniciado com sucesso!"
-        break
-    fi
-    sleep 2  # Aguarda um pouco mais antes de tentar novamente
-done
-
-# Encontrar a última ocorrência de "SA-MP Dedicated Server" no log
-echo "Procurando pela última ocorrência de 'SA-MP Dedicated Server' no log..."
-last_log_line=$(grep -n "SA-MP Dedicated Server" "$LOG_FILE" | tail -n 1 | cut -d: -f1)
-
-# Verificar se encontramos a linha
-if [ -z "$last_log_line" ]; then
-    echo "Não foi encontrada a última ocorrência de 'SA-MP Dedicated Server'. Exibindo logs do início."
-    last_log_line=0
-fi
-
-# Exibir o conteúdo do log a partir da última ocorrência de "SA-MP Dedicated Server"
-echo "Exibindo logs a partir da última ocorrência de 'SA-MP Dedicated Server'..."
-tail -n +$last_log_line "$LOG_FILE" &
+./$SERVER_PATH
 
 # Monitorar se o servidor fechou sozinho (processo terminou)
 while true; do
     # Verificar se o processo do servidor ainda está rodando
-    if ! ps -p $SERVER_PID > /dev/null; then
+    if ! pgrep -x "samp03svr" > /dev/null; then
         echo "O servidor fechou automaticamente. Encerrando o script."
         exit 0
     fi
