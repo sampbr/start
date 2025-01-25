@@ -48,11 +48,11 @@ echo "Iniciando o servidor..."
 # Capturar o PID do processo do servidor
 SERVER_PID=$!
 
-# Aguardar até detectar a mensagem "Started server on"
+# Aguardar até detectar a mensagem "SA-MP Dedicated Server" ou "Started server on"
 echo "Aguardando a inicialização do servidor..."
 while true; do
-    # Verificar se a mensagem "Started server on" aparece no log
-    if tail -n 20 ./server_log.txt | grep -q "Started server on"; then
+    # Verificar se a mensagem "SA-MP Dedicated Server" ou "Started server on" aparece no log
+    if tail -n 20 "$LOG_FILE" | grep -q -E "SA-MP Dedicated Server|Started server on"; then
         echo "Servidor iniciado com sucesso!"
         break
     fi
@@ -61,7 +61,7 @@ done
 
 # Encontrar a última ocorrência de "SA-MP Dedicated Server" no log
 echo "Procurando pela última ocorrência de 'SA-MP Dedicated Server' no log..."
-last_log_line=$(grep -n "SA-MP Dedicated Server" ./server_log.txt | tail -n 1 | cut -d: -f1)
+last_log_line=$(grep -n "SA-MP Dedicated Server" "$LOG_FILE" | tail -n 1 | cut -d: -f1)
 
 # Verificar se encontramos a linha
 if [ -z "$last_log_line" ]; then
@@ -71,7 +71,7 @@ fi
 
 # Exibir o conteúdo do log a partir da linha encontrada
 echo "Exibindo logs a partir da última ocorrência de 'SA-MP Dedicated Server'..."
-tail -n +$((last_log_line + 1)) ./server_log.txt &
+tail -n +$((last_log_line + 1)) "$LOG_FILE" &
 
 # Monitorar se o servidor fechou sozinho (processo terminou)
 while true; do
