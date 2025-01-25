@@ -47,11 +47,30 @@ echo "Iniciando o servidor..."
 # Capturar o PID do processo do servidor
 SERVER_PID=$!
 
-# Exibir a mensagem "Started server on" sem desaparecer
-echo "Started server on port: 7777, with maxplayers: 500 lanmode is OFF."
+# Aguardar até detectar a mensagem "Started server on"
+echo "Aguardando a inicialização do servidor..."
+while true; do
+    # Verificar se a mensagem "Started server on" aparece no log
+    if tail -n 10 ./server_log.txt | grep -q "Started server on"; then
+        echo "Servidor iniciado com sucesso!"
+        break
+    fi
+    sleep 1
+done
 
-# Monitorar o log server_log.txt em tempo real (tail -f)
-tail -f ./server_log.txt &
+# Encontrar a última ocorrência de "SA-MP Dedicated Server" no log
+echo "Procurando pela última ocorrência de 'SA-MP Dedicated Server' no log..."
+last_log_line=$(grep -n "SA-MP Dedicated Server" ./server_log.txt | tail -n 1 | cut -d: -f1)
+
+# Verificar se encontramos a linha
+if [ -z "$last_log_line" ]; then
+    echo "Não foi encontrada a última ocorrência de 'SA-MP Dedicated Server'. Exibindo logs do início."
+    last_log_line=0
+fi
+
+# Exibir o conteúdo do log a partir da linha encontrada
+echo "Exibindo logs a partir da última ocorrência de 'SA-MP Dedicated Server'..."
+tail -n +$((last_log_line + 1)) ./server_log.txt &
 
 # Monitorar se o servidor fechou sozinho (processo terminou)
 while true; do
