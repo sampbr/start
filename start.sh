@@ -2,7 +2,7 @@
 
 # Caminho para o executável do servidor
 SERVER_PATH="./samp03svr"
-LOG_FILE="./server_log.txt"
+LOG_FILE="server_log.txt"
 LOG_DIR="./logs"
 
 # Verificar se a pasta logs existe e removê-la
