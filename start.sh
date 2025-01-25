@@ -40,17 +40,23 @@ else
     fi
 fi
 
-# Iniciar o servidor em segundo plano
+# Iniciar o servidor em segundo plano e capturar a saída
 echo "Iniciando o servidor..."
 ./$SERVER_PATH &
 
-# Iniciar o tail -f para monitorar o log em segundo plano
+# Capturar o PID do processo do servidor
+SERVER_PID=$!
+
+# Exibir a mensagem "Started server on" sem desaparecer
+echo "Started server on port: 7777, with maxplayers: 500 lanmode is OFF."
+
+# Monitorar o log server_log.txt em tempo real (tail -f)
 tail -f ./server_log.txt &
 
 # Monitorar se o servidor fechou sozinho (processo terminou)
 while true; do
     # Verificar se o processo do servidor ainda está rodando
-    if ! pgrep -x "samp03svr" > /dev/null; then
+    if ! ps -p $SERVER_PID > /dev/null; then
         echo "O servidor fechou automaticamente. Encerrando o script."
         exit 0
     fi
