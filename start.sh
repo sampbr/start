@@ -40,9 +40,12 @@ else
     fi
 fi
 
-# Iniciar o servidor
+# Iniciar o servidor em segundo plano
 echo "Iniciando o servidor..."
-./$SERVER_PATH
+./$SERVER_PATH &
+
+# Iniciar o tail -f para monitorar o log em segundo plano
+tail -f ./server_log.txt &
 
 # Monitorar se o servidor fechou sozinho (processo terminou)
 while true; do
