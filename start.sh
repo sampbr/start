@@ -17,7 +17,7 @@ if [ -d "$LOG_DIR" ]; then
         echo "Falha ao remover a pasta logs. Verifique as permissões ou se a pasta está em uso."
     fi
 else
-    echo "Pasta logs não asdadaencontrada. Nenhuma ação necessária."
+    echo "Pasta logs não encontrada. Nenhuma ação necessária."
 fi
 
 # Verificar se o arquivo samp03svr existe
