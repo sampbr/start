@@ -2,6 +2,7 @@
 
 # Caminho para o executável do servidor
 SERVER_PATH="./samp03svr"
+LOG_FILE="./server_log.txt"
 LOG_DIR="./logs"
 
 # Verificar se a pasta logs existe e removê-la
@@ -51,7 +52,7 @@ SERVER_PID=$!
 echo "Aguardando a inicialização do servidor..."
 while true; do
     # Verificar se a mensagem "Started server on" aparece no log
-    if tail -n 10 ./server_log.txt | grep -q "Started server on"; then
+    if tail -n 20 ./server_log.txt | grep -q "Started server on"; then
         echo "Servidor iniciado com sucesso!"
         break
     fi
