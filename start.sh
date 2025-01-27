@@ -47,15 +47,19 @@ PLUGIN_LIST=$(ls $PLUGINS_DIR/*.so 2>/dev/null)
 
 # Verificar se encontrou plugins .so
 if [ ! -z "$PLUGIN_LIST" ]; then
-    # Construir a linha de plugins
+    # Construir a linha de plugins, começando com os plugins padrão
     PLUGINS_LINE="plugins streamer.so sscanf.so"
+    
+    # Adicionar os plugins encontrados na pasta
     for plugin in $PLUGIN_LIST; do
         PLUGINS_LINE="$PLUGINS_LINE $(basename $plugin)"
     done
     
     # Atualizar a linha de plugins no arquivo server.cfg
     echo "Atualizando a linha de plugins em $CFG_FILE..."
-    sed -i "s/^plugins.*/$PLUGINS_LINE/" $CFG_FILE
+    
+    # Procurar e substituir a linha que começa com "plugins"
+    sed -i "s|^plugins.*|$PLUGINS_LINE|" $CFG_FILE
     echo "Linha de plugins atualizada com sucesso!"
 else
     echo "Nenhum plugin .so encontrado na pasta $PLUGINS_DIR."
