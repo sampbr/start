@@ -55,12 +55,16 @@ if [ ! -z "$PLUGIN_LIST" ]; then
         PLUGINS_LINE="$PLUGINS_LINE $(basename $plugin)"
     done
     
-    # Atualizar a linha de plugins no arquivo server.cfg
-    echo "Atualizando a linha de plugins em $CFG_FILE..."
-    
-    # Procurar e substituir a linha que começa com "plugins"
-    sed -i "s|^plugins.*|$PLUGINS_LINE|" $CFG_FILE
-    echo "Linha de plugins atualizada com sucesso!"
+    # Verificar se o arquivo server.cfg existe antes de tentar modificá-lo
+    if [ -f "$CFG_FILE" ]; then
+        echo "Atualizando a linha de plugins em $CFG_FILE..."
+        
+        # Procurar e substituir a linha que começa com "plugins" no arquivo de configuração
+        sed -i "s|^plugins.*|$PLUGINS_LINE|" $CFG_FILE
+        echo "Linha de plugins atualizada com sucesso!"
+    else
+        echo "Arquivo $CFG_FILE não encontrado. Não foi possível atualizar a linha de plugins."
+    fi
 else
     echo "Nenhum plugin .so encontrado na pasta $PLUGINS_DIR."
 fi
