@@ -48,7 +48,7 @@ PLUGIN_LIST=$(ls $PLUGINS_DIR/*.so 2>/dev/null)
 # Verificar se encontrou plugins .so
 if [ ! -z "$PLUGIN_LIST" ]; then
     # Construir a linha de plugins, começando com os plugins padrão
-    PLUGINS_LINE="plugins streamer.so sscanf.so"
+    PLUGINS_LINE="plugins "
     
     # Adicionar os plugins encontrados na pasta
     for plugin in $PLUGIN_LIST; do
