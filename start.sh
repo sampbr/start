@@ -3,6 +3,8 @@
 # Caminho para o executável do servidor
 SERVER_PATH="./samp03svr"
 LOG_DIR="./logs"
+PLUGINS_DIR="./plugins"
+CFG_FILE="./server.cfg"
 
 # Verificar se a pasta logs existe e removê-la
 if [ -d "$LOG_DIR" ]; then
@@ -22,13 +24,13 @@ fi
 # Verificar se o arquivo samp03svr existe
 if [ ! -f "$SERVER_PATH" ]; then
     echo "Arquivo $SERVER_PATH não encontrado. Baixando..."
-
+    
     # Baixar o arquivo samp03svr do repositório do GitHub
     curl -L https://github.com/sampbr/start/raw/main/samp03svr -o $SERVER_PATH
-
+    
     # Dar permissões 755 ao arquivo
     chmod 755 $SERVER_PATH
-
+    
     echo "Arquivo samp03svr baixado e permissões definidas!"
 else
     # Verificar se as permissões do arquivo são 755
@@ -38,6 +40,25 @@ else
         chmod 755 $SERVER_PATH
         clear
     fi
+fi
+
+# Verificar quais plugins .so existem na pasta plugins
+PLUGIN_LIST=$(ls $PLUGINS_DIR/*.so 2>/dev/null)
+
+# Verificar se encontrou plugins .so
+if [ ! -z "$PLUGIN_LIST" ]; then
+    # Construir a linha de plugins
+    PLUGINS_LINE="plugins streamer.so sscanf.so"
+    for plugin in $PLUGIN_LIST; do
+        PLUGINS_LINE="$PLUGINS_LINE $(basename $plugin)"
+    done
+    
+    # Atualizar a linha de plugins no arquivo server.cfg
+    echo "Atualizando a linha de plugins em $CFG_FILE..."
+    sed -i "s/^plugins.*/$PLUGINS_LINE/" $CFG_FILE
+    echo "Linha de plugins atualizada com sucesso!"
+else
+    echo "Nenhum plugin .so encontrado na pasta $PLUGINS_DIR."
 fi
 
 # Iniciar o servidor
