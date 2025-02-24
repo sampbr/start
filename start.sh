@@ -44,7 +44,7 @@ while true; do
 
     CPU_USAGE=$(ps -o %cpu= -p $SERVER_PID | awk '{print int($1)}')
 
-    if [ "$CPU_USAGE" -ge 150 ]; then
+    if [ "$CPU_USAGE" -ge 200 ]; then
         kill -9 $SERVER_PID
         exit 1
     fi
