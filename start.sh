@@ -72,14 +72,3 @@ fi
 # Iniciar o servidor
 echo "Iniciando o servidor..."
 ./$SERVER_PATH
-
-# Monitorar se o servidor fechou sozinho (processo terminou)
-while true; do
-    # Verificar se o processo do servidor ainda está rodando
-    if ! pgrep -x "samp03svr" > /dev/null; then
-        echo "O servidor fechou automaticamente. Encerrando o script."
-        exit 0
-    fi
-    # Aguardar 5 segundos antes de verificar novamente
-    sleep 5
-done
