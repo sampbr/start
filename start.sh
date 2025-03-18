@@ -6,6 +6,12 @@ LOG_DIR="./logs"
 PLUGINS_DIR="./plugins"
 CFG_FILE="./server.cfg"
 
+# Verificar se o servidor já está em execução
+if pgrep -x "samp03svr" > /dev/null; then
+    echo "O servidor já está em execução. Não será iniciado novamente."
+    exit 1
+fi
+
 # Verificar se a pasta logs existe e removê-la
 if [ -d "$LOG_DIR" ]; then
     echo "Pasta logs identificada. Tentando remover..."
@@ -71,4 +77,4 @@ fi
 
 # Iniciar o servidor
 echo "Iniciando o servidor..."
-./$SERVER_PATH
+exec ./$SERVER_PATH
