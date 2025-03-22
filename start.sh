@@ -43,18 +43,6 @@ else
     fi
 fi
 
-# Iniciar o servidor e capturar a saída
+# Iniciar o servidor
 echo "Iniciando o servidor..."
-./$SERVER_PATH | tee server.log &
-
-# Aguardar um momento para verificar se o servidor realmente iniciou
-sleep 5
-
-# Verificar se a mensagem "Started" aparece no log
-if grep -q "Started" server.log; then
-    echo "Servidor iniciado com sucesso!"
-else
-    echo "Falha ao iniciar o servidor. Encerrando script..."
-    pkill -x "samp03svr"  # Para o processo caso esteja rodando
-    exit 1
-fi
+exec ./$SERVER_PATH
