@@ -3,7 +3,6 @@
 # Caminhos
 SERVER_PATH="./samp03svr"
 LOG_DIR="./logs"
-LOG_FILE="server.log"
 
 # Remover pasta de logs se existir
 if [ -d "$LOG_DIR" ]; then
@@ -18,24 +17,23 @@ if [ ! -f "$SERVER_PATH" ]; then
     chmod +x $SERVER_PATH
 fi
 
-# Remover log anterior
-rm -f $LOG_FILE
-
-# Iniciar o servidor e capturar saída no log
+# Iniciar o servidor em background
 echo "Iniciando o servidor..."
-./$SERVER_PATH > $LOG_FILE 2>&1 &
+./$SERVER_PATH &
 
-# Aguardar indefinidamente até detectar "Started" no log
-echo "Aguardando o servidor iniciar..."
+# Capturar o PID do servidor
+SERVER_PID=$!
 
-while true; do
-    if grep -q "Started" $LOG_FILE; then
-        echo "Started Servidor iniciado com sucesso!" 
-        break
-    fi
-    sleep 10
-done
+# Aguardar 10 segundos
+sleep 10
 
-# Manter o script rodando para que o contêiner não finalize
-echo "Monitorando logs do servidor..."
-tail -f $LOG_FILE
+# Verificar se o servidor ainda está rodando
+if kill -0 $SERVER_PID 2>/dev/null; then
+    echo "Started"
+else
+    echo "Servidor fechou inesperadamente. Encerrando script."
+    exit 1
+fi
+
+# Manter o script rodando para não fechar o contêiner
+wait $SERVER_PID
