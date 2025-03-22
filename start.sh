@@ -46,6 +46,17 @@ tail -f $LOG_FILE | while read line; do
     fi
 done
 
-# Continuar monitorando as logs do servidor após a inicialização
+# Agora que o servidor foi iniciado, monitoramos as logs e o servidor continuará sendo monitorado
 echo "O servidor está rodando. As logs continuam sendo exibidas."
-tail -f $LOG_FILE
+
+# Enquanto o servidor estiver rodando, o script não vai fechar
+while true; do
+    # Verificar se o servidor ainda está em execução
+    if ! ps -p $SERVER_PID > /dev/null; then
+        echo "O servidor foi fechado inesperadamente. Continuando o monitoramento."
+        sleep 10  # Aguarda 10 segundos antes de verificar novamente
+        ./$SERVER_PATH > $LOG_FILE 2>&1 &  # Reinicia o servidor
+        SERVER_PID=$!  # Atualiza o PID com o novo processo
+    fi
+    sleep 5  # Atraso para verificar a cada 5 segundos
+done
