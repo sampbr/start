@@ -39,12 +39,13 @@ echo "Monitorando logs..."
 tail -f $LOG_FILE | while read line; do
     echo "$line"  # Exibe a linha no console
     
-    # Verificar se a linha contém a frase "Number of"
-    if echo "$line" | grep -q "Number of"; then
-        echo "Started"
+    # Verificar se a linha contém a frase "Started"
+    if echo "$line" | grep -q "Started"; then
+        echo "Servidor iniciado. O script agora continuará monitorando as logs."
+        break  # Sai do loop de monitoramento de logs
     fi
 done
 
-# Manter o script rodando enquanto o servidor estiver ativo
-echo "O servidor está rodando. O script continuará ativo."
-wait $SERVER_PID
+# Continuar monitorando as logs do servidor após a inicialização
+echo "O servidor está rodando. As logs continuam sendo exibidas."
+tail -f $LOG_FILE
