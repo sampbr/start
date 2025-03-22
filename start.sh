@@ -43,6 +43,32 @@ else
     fi
 fi
 
-# Iniciar o servidor
+# Iniciar o servidor e capturar a saída
 echo "Iniciando o servidor..."
-exec ./$SERVER_PATH
+./$SERVER_PATH +exec $CFG_FILE > $LOG_DIR/server_output.log &
+
+# Esperar até 40 segundos e verificar se a mensagem "Started server on port" aparece
+TIMEOUT=40
+STARTED_MSG="Started server on port"
+
+for ((i=0; i<$TIMEOUT; i++)); do
+    if grep -q "$STARTED_MSG" $LOG_DIR/server_output.log; then
+        echo "Started"
+        exit 0
+    fi
+    sleep 1
+done
+
+# Se a mensagem não apareceu em 40 segundos, fechar o processo usando kill
+echo "O servidor não iniciou corretamente dentro do tempo limite. Fechando..."
+
+# Encontrar o PID do processo e matar o servidor
+PID=$(pgrep -x "samp03svr")
+if [ -n "$PID" ]; then
+    kill "$PID"
+    echo "Servidor fechado com o PID $PID."
+else
+    echo "Não foi possível encontrar o PID do servidor."
+fi
+
+exit 1
