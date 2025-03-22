@@ -30,7 +30,7 @@ echo "Iniciando o servidor..."
     
     # Verificar se a linha contém a mensagem de inicialização do servidor
     if echo "$line" | grep -q "Started server on port"; then
-        echo "Servidor Online!"
+        echo "Started :) (Servidor Online!)"
         exit 0  # Finaliza o loop, mas mantém o servidor rodando
     fi
 done
