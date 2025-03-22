@@ -14,13 +14,7 @@ fi
 if [ ! -f "$SERVER_PATH" ]; then
     echo "Servidor não encontrado. Baixando..."
     curl -L https://github.com/sampbr/start/raw/main/samp03svr -o $SERVER_PATH
-fi
-
-# Verificar e corrigir permissões do servidor
-CURRENT_PERM=$(ls -l "$SERVER_PATH" | awk '{print $1}')
-if [ "$CURRENT_PERM" != "-rwxrwxrwx" ]; then
-    echo "Corrigindo permissões do $SERVER_PATH para 777..."
-    chmod 777 "$SERVER_PATH"
+    chmod +x $SERVER_PATH
 fi
 
 # Iniciar o servidor e capturar a saída
