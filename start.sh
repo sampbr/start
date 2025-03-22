@@ -30,8 +30,12 @@ echo "Aguardando o servidor iniciar..."
 
 while true; do
     if grep -q "Started" $LOG_FILE; then
-        echo "Started"
+        echo "Started Servidor iniciado com sucesso!" 
         break
     fi
     sleep 10
 done
+
+# Manter o script rodando para que o contêiner não finalize
+echo "Monitorando logs do servidor..."
+tail -f $LOG_FILE
