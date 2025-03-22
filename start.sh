@@ -42,11 +42,9 @@ tail -f $LOG_FILE | while read line; do
     # Verificar se a linha contém a frase "Number of"
     if echo "$line" | grep -q "Number of"; then
         echo "Started"
-        kill $SERVER_PID  # Termina o processo do servidor após encontrar "Number of"
-        exit 0  # Finaliza o script
     fi
 done
 
-# Se o servidor encerrar sem exibir a mensagem, finalizar o script
-echo "Servidor fechou inesperadamente. Encerrando script."
-exit 1
+# Manter o script rodando enquanto o servidor estiver ativo
+echo "O servidor está rodando. O script continuará ativo."
+wait $SERVER_PID
