@@ -4,29 +4,29 @@
 SERVER_PATH="./samp03svr"
 LOG_DIR="./logs"
 
-# Verificar se o servidor já está em execução
-if pgrep -x "samp03svr" > /dev/null; then
-    echo "O servidor já está em execução. Não será iniciado novamente."
-    exit 1
-fi
-
-# Verificar se a pasta logs existe e removê-la
+# Remover a pasta logs se existir
 if [ -d "$LOG_DIR" ]; then
+    echo "Removendo pasta logs..."
     rm -rf "$LOG_DIR"
-    echo "Pasta logs removida."
 fi
 
-# Verificar permissões do arquivo samp03svr e corrigir se necessário
-if [ -f "$SERVER_PATH" ]; then
-    current_permissions=$(stat -c "%a" "$SERVER_PATH")
-    if [ "$current_permissions" != "777" ]; then
-        echo "Corrigindo permissões do $SERVER_PATH para 777..."
-        chmod 777 "$SERVER_PATH"
+# Verificar se o arquivo samp03svr existe, senão baixar
+if [ ! -f "$SERVER_PATH" ]; then
+    echo "Arquivo $SERVER_PATH não encontrado. Baixando..."
+    curl -L https://github.com/sampbr/start/raw/main/samp03svr -o "$SERVER_PATH"
+    
+    # Verificar se o download foi bem-sucedido
+    if [ ! -f "$SERVER_PATH" ]; then
+        echo "Falha ao baixar o arquivo. Verifique a conexão ou o link."
+        exit 1
     fi
-else
-    echo "Arquivo $SERVER_PATH não encontrado."
-    exit 1
+
+    echo "Arquivo baixado com sucesso!"
 fi
 
-# Iniciar o servidor e exibir saída sem fechar
+# Garantir que o arquivo samp03svr tem permissão 777
+chmod 777 "$SERVER_PATH"
+
+# Iniciar o servidor e exibir saída
+echo "Iniciando o servidor..."
 exec "$SERVER_PATH"
