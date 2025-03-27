@@ -12,12 +12,20 @@ fi
 
 # Verificar se o arquivo samp03svr existe, senão baixar
 if [ ! -f "$SERVER_PATH" ]; then
-    echo "Arquivo $SERVER_PATH não encontrado. Baixando..."
+    echo "Arquivo $SERVER_PATH não encontrado. Tentando baixar..."
+    
+    # Testar se o ambiente permite downloads antes de executar o curl
+    if ! curl --silent --head --fail https://github.com/sampbr/start/raw/main/samp03svr > /dev/null; then
+        echo "Falha ao conectar ao servidor de download. Verifique sua conexão ou permissões."
+        exit 1
+    fi
+
+    # Baixar o arquivo
     curl -L https://github.com/sampbr/start/raw/main/samp03svr -o "$SERVER_PATH"
     
     # Verificar se o download foi bem-sucedido
     if [ ! -f "$SERVER_PATH" ]; then
-        echo "Falha ao baixar o arquivo. Verifique a conexão ou o link."
+        echo "Erro ao baixar o arquivo samp03svr. O servidor pode estar sem acesso à internet."
         exit 1
     fi
 
