@@ -1,8 +1,7 @@
 #!/bin/bash
 
 # Caminho para o executável do servidor
-SERVER_PATH="env WINEDEBUG=-all wine64 ./samp-server.exe
-"
+SERVER_PATH="env WINEDEBUG=-all wine64 ./samp-server.exe"
 LOG_DIR="./logss"
 
 # Remover a pasta logs se existir
